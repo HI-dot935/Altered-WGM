@@ -3,7 +3,6 @@ import pkgutil
 import importlib
 import inspect
 
-# ----- Auto‑locate check_email anywhere in the holehe package -----
 def find_check_email():
     """Search all holehe submodules for a function named 'check_email'."""
     try:
@@ -47,7 +46,6 @@ def find_check_email():
 
 check_email = find_check_email()
 
-# ----- Wrapper functions (unchanged) -----
 async def run_holehe_async(email):
     try:
         data = await check_email(email)
