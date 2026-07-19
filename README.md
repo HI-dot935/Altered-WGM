@@ -4,7 +4,7 @@
 **Altered‑WGM** is a self‑hosted, all‑in‑one OSINT platform that combines the best of **RAWS** (case management, dashboard, modular design), **Epieos** (email & phone intelligence), **Holehe** (120+ site account checker with clickable profile links), **XposedOrNot** (free, keyless breach detection), and a **150+ site username scanner**.  
 It provides a **goofy dark cyberpunk Web UI** with a sidebar for navigation, plus a **command‑line interface** for automation. Everything runs locally – your data stays private.
 
-> **Powered by** Python 3.9+ | Flask | aiohttp | Holehe (CLI) | XposedOrNot API | RAWS-inspired design
+> **Powered by** Python 3.9+ | Flask | aiohttp | Holehe (CLI) | XposedOrNot API | RAWS‑inspired design
 
 ---
 
@@ -16,7 +16,7 @@ It provides a **goofy dark cyberpunk Web UI** with a sidebar for navigation, plu
 | 📱 **Phone Intel** | Validate international phone numbers, identify type (mobile/landline), show location, carrier, timezone |
 | 🔍 **Deep Account Scan** | Check if an email is registered on **120+ sites** (using Holehe) – shows profile links when available |
 | 🔐 **Breach Check** | Uses **XposedOrNot** (completely free, no API key) to show known data breaches |
-| 👤 **Username Search** | Check **150+ platforms** asynchronously for a given username – returns clickable profile URLs |
+| 👤 **Username Search** | Check **150+ platforms** asynchronously – uses content‑based detection to reduce false positives |
 | 🌐 **Domain Recon** | DNS MX record lookup (extensible to WHOIS, subdomains, etc.) |
 | 📂 **Case Management** | All queries are logged with timestamps; review, clear, or export as Markdown |
 | 📥 **Export Report** | Generate a **Markdown** report with all findings in one file |
@@ -51,7 +51,7 @@ The script will:
 
 Create a Python virtual environment (.venv/).
 
-Install all required packages (including holehe for CLI usage).
+Install all required packages.
 
 Start the Flask web server at http://127.0.0.1:8420.
 
@@ -138,12 +138,17 @@ Username Search – Enter johndoe; after 10‑20 seconds, you’ll see a list of
 CLI – Run altered-wgm -e test@example.com – you should see similar output without errors.
 
 🛠️ Troubleshooting
-ImportError: cannot import name 'check_email' from 'holehe'
-Cause: Newer versions of holehe changed their internal structure.
+holehe command not found or CLI fails
+Ensure holehe is installed in your virtual environment: pip install holehe
 
-Solution: The tool now uses the Holehe CLI (subprocess) instead of direct import, so this error no longer occurs. Ensure holehe is installed (pip install holehe).
+The tool now calls the holehe console script directly. If it still fails, it will fall back to python -m holehe.
 
-If you still see issues, run python3 -m holehe --version to verify the CLI works.
+Test manually: holehe --help
+
+Web UI shows unstyled HTML (white background, no dark theme)
+Make sure frontend/styles.css exists and is linked correctly in index.html.
+
+Hard‑refresh your browser (Cmd+Shift+R / Ctrl+Shift+R).
 
 ModuleNotFoundError: No module named 'aiohttp'
 Install it manually: pip install aiohttp
@@ -155,20 +160,10 @@ bash
 lsof -i :8420   # macOS/Linux
 netstat -ano | findstr :8420   # Windows
 Slow scans
-The Deep Account Scan and Username Search query many sites asynchronously – network speed and site rate‑limiting affect performance. Be patient; they usually finish within 15‑20 seconds.
+The Deep Account Scan and Username Search query many sites asynchronously – network speed and site rate‑limiting affect performance. They usually finish within 15‑30 seconds.
 
 SSL certificate errors (on some networks)
 The username search disables SSL verification (ssl=False) to avoid issues. If you still get errors, try updating aiohttp: pip install --upgrade aiohttp
-
-holehe CLI not found
-Ensure holehe is installed in your virtual environment: pip install holehe
-
-Test with python3 -m holehe --help
-
-Web UI shows unstyled HTML (white background, no dark theme)
-Make sure frontend/styles.css exists and is linked correctly in index.html.
-
-Hard‑refresh your browser (Cmd+Shift+R / Ctrl+Shift+R).
 
 📁 Project Structure
 text
@@ -186,7 +181,7 @@ Altered-WGM/
 │   │       ├── phone_intel.py      # Phone number analysis
 │   │       ├── holehe_wrapper.py   # Holehe CLI wrapper (subprocess)
 │   │       ├── xposed_check.py     # Keyless breach check via XposedOrNot
-│   │       ├── username_check.py   # 150+ site async scanner
+│   │       ├── username_check.py   # 150+ site async scanner (content-based)
 │   │       └── domain_recon.py     # DNS MX records
 │   ├── requirements.txt
 │   └── Dockerfile
@@ -216,3 +211,5 @@ The authors assume no liability for any misuse.
 
 📄 License
 MIT – free to use and modify, with attribution.
+Built with ❤️ and lots of ☕ for the community.
+
