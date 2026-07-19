@@ -1,15 +1,9 @@
 # 🕵️ Altered‑WGM – Ultimate OSINT Workbench
 
-**Altered‑WGM** is a **self‑hosted, all‑in‑one OSINT platform** that combines the best of:
+**Altered‑WGM** is a self‑hosted, all‑in‑one OSINT platform that combines the best of **RAWS** (case management, dashboard, modular design), **Epieos** (email & phone intelligence), **Holehe** (120+ site account checker with clickable profile links), **XposedOrNot** (free, keyless breach detection), and a **150+ site username scanner**.  
+It provides a **goofy dark cyberpunk Web UI** with a sidebar for navigation, plus a **command‑line interface** for automation. Everything runs locally – your data stays private.
 
-- **RAWS** – modular dashboard, case management, report export
-- **Epieos** – email & phone intelligence
-- **Holehe** – 120+ site account existence checker (with clickable profile links)
-- **XposedOrNot** – free, keyless breach detection (no API key required)
-- **Username Search** – checks **150+ platforms** asynchronously
-- **Domain Recon** – DNS MX records
-
-It provides a **goofy dark cyberpunk Web UI** with a sidebar for easy navigation, plus a **command‑line interface** for automation. Everything runs **locally** – your data stays private.
+> **Powered by** Python 3.9+ | Flask | aiohttp | Holehe (CLI) | XposedOrNot API | RAWS-inspired design
 
 ---
 
@@ -42,7 +36,6 @@ It provides a **goofy dark cyberpunk Web UI** with a sidebar for easy navigation
 ```bash
 git clone https://github.com/yourusername/Altered-WGM.git
 cd Altered-WGM
-
 2. Run the startup script (creates virtual environment, installs dependencies, starts the web UI)
 Linux / macOS:
 
@@ -57,7 +50,7 @@ The script will:
 
 Create a Python virtual environment (.venv/).
 
-Install all required packages.
+Install all required packages (including holehe for CLI usage).
 
 Start the Flask web server at http://127.0.0.1:8420.
 
@@ -171,6 +164,11 @@ Ensure holehe is installed in your virtual environment: pip install holehe
 
 Test with python3 -m holehe --help
 
+Web UI shows unstyled HTML (white background, no dark theme)
+Make sure frontend/styles.css exists and is linked correctly in index.html.
+
+Hard‑refresh your browser (Cmd+Shift+R / Ctrl+Shift+R).
+
 📁 Project Structure
 text
 Altered-WGM/
@@ -216,4 +214,4 @@ Always comply with the terms of service of the platforms you query, and respect 
 The authors assume no liability for any misuse.
 
 📄 License
-MIT – free to use and modify, with attribution
+MIT – free to use and modify, with attribution.
