@@ -1,23 +1,53 @@
 import asyncio
+import pkgutil
+import importlib
+import inspect
 
-# Try every possible import location – works with 1.58.x, 1.59+, and 1.61+
-try:
-    from holehe import check_email
-except ImportError:
+# ----- Auto‑locate check_email anywhere in the holehe package -----
+def find_check_email():
+    """Search all holehe submodules for a function named 'check_email'."""
     try:
-        from holehe.core import check_email
+        import holehe
     except ImportError:
+        raise ImportError("holehe is not installed.")
+    
+    # First, try common direct imports
+    for attempt in [
+        ("holehe", "check_email"),
+        ("holehe.core", "check_email"),
+        ("holehe.modules", "check_email"),
+        ("holehe.holehe", "check_email"),
+    ]:
         try:
-            from holehe.modules import check_email
+            mod = importlib.import_module(attempt[0])
+            if hasattr(mod, attempt[1]):
+                return getattr(mod, attempt[1])
         except ImportError:
-            import holehe
-            if hasattr(holehe, 'check_email'):
-                check_email = holehe.check_email
-            else:
-                raise ImportError(
-                    "Cannot import check_email. Please install holehe==1.58.9.7"
-                )
+            continue
+    
+    # If not found, recursively scan all submodules
+    for importer, modname, ispkg in pkgutil.walk_packages(
+        path=holehe.__path__,
+        prefix=holehe.__name__ + ".",
+        onerror=lambda x: None
+    ):
+        try:
+            mod = importlib.import_module(modname)
+            for name, obj in inspect.getmembers(mod):
+                if name == "check_email" and inspect.iscoroutinefunction(obj):
+                    return obj
+        except ImportError:
+            continue
+    
+    raise ImportError(
+        "Cannot find 'check_email' in holehe. "
+        "Please run: python3 -c 'import holehe; print(holehe.__path__)' "
+        "and share the output with me."
+    )
 
+check_email = find_check_email()
+
+# ----- Wrapper functions (unchanged) -----
 async def run_holehe_async(email):
     try:
         data = await check_email(email)
