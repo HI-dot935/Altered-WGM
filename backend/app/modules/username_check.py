@@ -2,7 +2,7 @@ import aiohttp
 import asyncio
 from typing import Dict
 
-# 150+ sites – curated from Sherlock, Maigret, and other OSINT projects
+# ─── 150+ SITES ──────────────────────────────────────────────────
 SITES = {
     # Social Media Giants
     "Facebook": "https://facebook.com/{username}",
@@ -20,7 +20,7 @@ SITES = {
     "Twitch": "https://twitch.tv/{username}",
     "VK": "https://vk.com/{username}",
     "Odnoklassniki": "https://ok.ru/profile/{username}",
-    
+
     # Professional & Dev
     "GitHub": "https://github.com/{username}",
     "GitLab": "https://gitlab.com/{username}",
@@ -33,7 +33,7 @@ SITES = {
     "Hashnode": "https://hashnode.com/@{username}",
     "WordPress": "https://{username}.wordpress.com",
     "Blogger": "https://{username}.blogspot.com",
-    
+
     # Coding & Tech
     "LeetCode": "https://leetcode.com/{username}",
     "HackerRank": "https://hackerrank.com/{username}",
@@ -52,7 +52,7 @@ SITES = {
     "PyPI": "https://pypi.org/user/{username}",
     "NPM": "https://npmjs.com/~{username}",
     "RubyGems": "https://rubygems.org/profiles/{username}",
-    
+
     # Gaming
     "Steam": "https://steamcommunity.com/id/{username}",
     "PlayStation": "https://psnprofiles.com/{username}",
@@ -66,7 +66,7 @@ SITES = {
     "Roblox": "https://roblox.com/user/{username}",
     "Mixer": "https://mixer.com/{username}",
     "DLive": "https://dlive.tv/{username}",
-    
+
     # Music & Audio
     "Spotify": "https://open.spotify.com/user/{username}",
     "SoundCloud": "https://soundcloud.com/{username}",
@@ -78,7 +78,7 @@ SITES = {
     "Tidal": "https://tidal.com/user/{username}",
     "Splice": "https://splice.com/{username}",
     "Spreaker": "https://spreaker.com/user/{username}",
-    
+
     # Art & Design
     "Behance": "https://behance.net/{username}",
     "Dribbble": "https://dribbble.com/{username}",
@@ -90,7 +90,7 @@ SITES = {
     "VSCO": "https://vsco.co/{username}",
     "Imgur": "https://imgur.com/user/{username}",
     "Gravatar": "https://gravatar.com/{username}",
-    
+
     # Video & Streaming
     "Vimeo": "https://vimeo.com/{username}",
     "Dailymotion": "https://dailymotion.com/{username}",
@@ -99,7 +99,7 @@ SITES = {
     "YouNow": "https://younow.com/{username}",
     "Rumble": "https://rumble.com/user/{username}",
     "Ustream": "https://ustream.tv/channel/{username}",
-    
+
     # Content & Reading
     "Quora": "https://quora.com/profile/{username}",
     "GoodReads": "https://goodreads.com/{username}",
@@ -111,7 +111,7 @@ SITES = {
     "Scribd": "https://scribd.com/{username}",
     "Slideshare": "https://slideshare.net/{username}",
     "SpeakerDeck": "https://speakerdeck.com/{username}",
-    
+
     # Education & Learning
     "KhanAcademy": "https://khanacademy.org/profile/{username}",
     "Duolingo": "https://duolingo.com/profile/{username}",
@@ -123,7 +123,7 @@ SITES = {
     "Pluralsight": "https://pluralsight.com/profile/{username}",
     "Udacity": "https://udacity.com/user/{username}",
     "edX": "https://edx.org/user/{username}",
-    
+
     # Business & Professional
     "AngelList": "https://angel.co/u/{username}",
     "Crunchbase": "https://crunchbase.com/person/{username}",
@@ -134,14 +134,14 @@ SITES = {
     "Gab": "https://gab.com/{username}",
     "Parler": "https://parler.com/{username}",
     "MeWe": "https://mewe.com/i/{username}",
-    
+
     # Dating & Lifestyle
     "Tinder": "https://tinder.com/@{username}",
     "Bumble": "https://bumble.com/user/{username}",
     "OkCupid": "https://okcupid.com/profile/{username}",
     "Match": "https://match.com/profile/{username}",
     "FetLife": "https://fetlife.com/users/{username}",
-    
+
     # Travel & Reviews
     "TripAdvisor": "https://tripadvisor.com/members/{username}",
     "Yelp": "https://yelp.com/user_details?userid={username}",
@@ -151,7 +151,7 @@ SITES = {
     "Eventbrite": "https://eventbrite.com/people/{username}",
     "Foursquare": "https://foursquare.com/user/{username}",
     "Swarm": "https://swarmapp.com/user/{username}",
-    
+
     # Crowdfunding & Commerce
     "ProductHunt": "https://producthunt.com/@{username}",
     "Indiegogo": "https://indiegogo.com/individuals/{username}",
@@ -163,7 +163,7 @@ SITES = {
     "Teespring": "https://teespring.com/stores/{username}",
     "Etsy": "https://etsy.com/shop/{username}",
     "Redbubble": "https://redbubble.com/people/{username}",
-    
+
     # Misc Communities
     "HubPages": "https://hubpages.com/@{username}",
     "Wattpad": "https://wattpad.com/user/{username}",
@@ -181,20 +181,42 @@ SITES = {
     "Guilded": "https://guilded.gg/{username}"
 }
 
+# ─── COMMON "NOT FOUND" PHRASES ──────────────────────────────────
+NOT_FOUND_PHRASES = [
+    "not found", "doesn't exist", "no such user", "page not found",
+    "sorry", "404", "could not find", "does not exist", "isn't available",
+    "user not found", "profile not found", "account not found",
+    "this page could not be found", "we couldn't find", "no results found"
+]
+
+# ─── SITE CHECKER (async) ────────────────────────────────────────
 async def check_site(session: aiohttp.ClientSession, name: str, url: str, username: str) -> Dict:
     full_url = url.format(username=username)
     try:
-        async with session.head(full_url, timeout=10, allow_redirects=True, ssl=False) as resp:
-            exists = resp.status == 200
-        if not exists:
-            async with session.get(full_url, timeout=10, allow_redirects=True, ssl=False) as resp:
-                exists = resp.status == 200
-        return {"site": name, "url": full_url, "exists": exists, "error": None}
+        # Use GET to fetch content and inspect for error indicators
+        async with session.get(full_url, timeout=15, allow_redirects=True, ssl=False) as resp:
+            status = resp.status
+            if status == 404:
+                return {"site": name, "url": full_url, "exists": False, "error": None}
+            if status not in (200, 301, 302):
+                return {"site": name, "url": full_url, "exists": False, "error": f"HTTP {status}"}
+            # For 200, read a portion of the content (up to 4KB)
+            try:
+                content = await resp.text(encoding='utf-8', errors='ignore')
+            except:
+                content = ""
+            content_lower = content[:4000].lower()
+            for phrase in NOT_FOUND_PHRASES:
+                if phrase in content_lower:
+                    return {"site": name, "url": full_url, "exists": False, "error": "Not found (detected)"}
+            # If no error phrases, assume it exists
+            return {"site": name, "url": full_url, "exists": True, "error": None}
     except asyncio.TimeoutError:
         return {"site": name, "url": full_url, "exists": False, "error": "Timeout"}
     except Exception as e:
         return {"site": name, "url": full_url, "exists": False, "error": str(e)[:50]}
 
+# ─── MAIN ASYNC SCAN ─────────────────────────────────────────────
 async def run_username_scan(username: str) -> Dict:
     connector = aiohttp.TCPConnector(limit=50, ssl=False)
     async with aiohttp.ClientSession(connector=connector) as session:
@@ -208,6 +230,7 @@ async def run_username_scan(username: str) -> Dict:
         "found_sites": found
     }
 
+# ─── SYNCHRONOUS WRAPPER ─────────────────────────────────────────
 def check_username_sync(username: str) -> Dict:
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
