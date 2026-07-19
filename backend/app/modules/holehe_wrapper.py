@@ -1,31 +1,32 @@
-import asyncio
+import subprocess
 import json
 import sys
-from typing import Dict
 
-async def run_holehe_async(email: str) -> Dict:
+def run_holehe_sync(email: str) -> dict:
+    """
+    Run holehe CLI and parse JSON output.
+    Uses synchronous subprocess with timeout to avoid hanging.
+    """
     try:
-        proc = await asyncio.create_subprocess_exec(
-            sys.executable, "-m", "holehe",
-            "--json", "--only-used", email,
-            stdout=asyncio.subprocess.PIPE,
-            stderr=asyncio.subprocess.PIPE
-        )
-        stdout, stderr = await proc.communicate()
-        stdout = stdout.decode("utf-8")
-        if proc.returncode != 0:
-            return {"error": f"Holehe failed: {stderr or stdout}"}
-        data = json.loads(stdout)
-        results = {}
+        cmd = [sys.executable, "-m", "holehe", "--json", "--only-used", email]
+        result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
+        
+        if result.returncode != 0:
+            return {"error": f"Holehe CLI failed: {result.stderr or result.stdout}"}
+        
+        data = json.loads(result.stdout)
+        output = {}
         for site, info in data.items():
-            results[site] = {
+            output[site] = {
                 "registered": info.get("registered", False),
                 "profile_url": info.get("profile_url") or None,
                 "error": info.get("error", None)
             }
-        return results
+        return output
+        
+    except subprocess.TimeoutExpired:
+        return {"error": "Holehe scan timed out (30s)."}
+    except json.JSONDecodeError:
+        return {"error": f"Invalid JSON from holehe: {result.stdout[:200]}"}
     except Exception as e:
-        return {"error": f"Failed: {str(e)}"}
-
-def run_holehe_sync(email: str) -> Dict:
-    return asyncio.run(run_holehe_async(email))
+        return {"error": f"Unexpected error: {str(e)}"}
