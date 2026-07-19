@@ -1,6 +1,6 @@
 import asyncio
 
-# ---- Smart import that works with all holehe versions ----
+# Try every possible import location – works with 1.58.x, 1.59+, and 1.61+
 try:
     from holehe import check_email
 except ImportError:
@@ -15,7 +15,7 @@ except ImportError:
                 check_email = holehe.check_email
             else:
                 raise ImportError(
-                    "Cannot import check_email. Please install holehe==1.57.2"
+                    "Cannot import check_email. Please install holehe==1.58.9.7"
                 )
 
 async def run_holehe_async(email):
