@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Altered-WGM</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app">
+        <!-- SIDEBAR -->
+        <nav class="sidebar">
+            <div class="logo">🕵️ Altered-WGM</div>
+            <ul>
+                <li><a href="#section-email">📧 Email Intel</a></li>
+                <li><a href="#section-phone">📱 Phone Intel</a></li>
+                <li><a href="#section-holehe">🔍 Deep Account Scan</a></li>
+                <li><a href="#section-xposed">🔐 Breach Check</a></li>
+                <li><a href="#section-username">👤 Username Search</a></li>
+                <li><a href="#section-domain">🌐 Domain Recon</a></li>
+                <li class="separator"></li>
+                <li><a href="#section-case">📋 Case Findings</a></li>
+                <li><a href="#section-export">📥 Export Report</a></li>
+            </ul>
+        </nav>
+
+        <!-- MAIN CONTENT -->
+        <main class="content">
+            <header>
+                <h1><span class="glitch">Altered</span>-<span class="glitch">WGM</span></h1>
+                <div class="tagline">⚡ RAWS + Epieos + Holehe + Xposed + more</div>
+                <div class="case-badge">📂 <span id="caseName">Default Case</span></div>
+            </header>
+
+            <div class="tools-grid">
+                <!-- Email -->
+                <section id="section-email" class="card card-email">
+                    <h2>📧 Email Intel</h2>
+                    <div class="input-group">
+                        <input type="email" id="emailInput" placeholder="target@example.com">
+                        <button id="emailBtn">Scan</button>
+                    </div>
+                    <div id="emailResult" class="result-box">💤 waiting...</div>
+                </section>
+
+                <!-- Phone -->
+                <section id="section-phone" class="card card-phone">
+                    <h2>📱 Phone Intel</h2>
+                    <div class="input-group">
+                        <input type="text" id="phoneInput" placeholder="+1234567890">
+                        <button id="phoneBtn">Scan</button>
+                    </div>
+                    <div id="phoneResult" class="result-box">💤 waiting...</div>
+                </section>
+
+                <!-- Holehe -->
+                <section id="section-holehe" class="card card-holehe">
+                    <h2>🔍 Deep Account Scan</h2>
+                    <div class="input-group">
+                        <input type="email" id="holeheInput" placeholder="target@example.com">
+                        <button id="holeheBtn">120+ Sites</button>
+                    </div>
+                    <div id="holeheResult" class="result-box">💤 waiting...</div>
+                </section>
+
+                <!-- Xposed -->
+                <section id="section-xposed" class="card card-xposed">
+                    <h2>🔐 Breach Check (Xposed)</h2>
+                    <div class="input-group">
+                        <input type="email" id="xposedInput" placeholder="target@example.com">
+                        <button id="xposedBtn">Check</button>
+                    </div>
+                    <div id="xposedResult" class="result-box">💤 waiting...</div>
+                </section>
+
+                <!-- Username -->
+                <section id="section-username" class="card card-username">
+                    <h2>👤 Username Search (150+ sites)</h2>
+                    <div class="input-group">
+                        <input type="text" id="usernameInput" placeholder="username">
+                        <button id="usernameBtn">Search</button>
+                    </div>
+                    <div id="usernameResult" class="result-box">💤 waiting...</div>
+                </section>
+
+                <!-- Domain -->
+                <section id="section-domain" class="card card-domain">
+                    <h2>🌐 Domain Recon</h2>
+                    <div class="input-group">
+                        <input type="text" id="domainInput" placeholder="example.com">
+                        <button id="domainBtn">Recon</button>
+                    </div>
+                    <div id="domainResult" class="result-box">💤 waiting...</div>
+                </section>
+            </div>
+
+            <!-- Case Findings -->
+            <section id="section-case" class="findings-section">
+                <h2>📋 Case Findings</h2>
+                <div id="findingsList" class="findings-list"><p class="empty">✨ Nothing yet – run a scan!</p></div>
+                <div class="actions">
+                    <button id="exportBtn" class="btn-export">📥 Export Report</button>
+                    <button id="clearBtn" class="btn-clear">🗑️ Clear All</button>
+                </div>
+                <div id="statusMsg"></div>
+            </section>
+        </main>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
