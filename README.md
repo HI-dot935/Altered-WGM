@@ -1,3 +1,4 @@
+![Uploading Screenshot 2026-07-19 at 12.29.40 PM.png…]()
 # 🕵️ Altered‑WGM – Ultimate OSINT Workbench
 
 **Altered‑WGM** is a self‑hosted, all‑in‑one OSINT platform that combines the best of **RAWS** (case management, dashboard, modular design), **Epieos** (email & phone intelligence), **Holehe** (120+ site account checker with clickable profile links), **XposedOrNot** (free, keyless breach detection), and a **150+ site username scanner**.  
