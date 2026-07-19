@@ -29,14 +29,17 @@ def email_lookup():
     email = data.get('email', '').strip()
     if not email:
         return jsonify({'error': 'Email required'}), 400
-    result = email_intel(email, HIBP_API_KEY)
-    current_case['findings'].append({
-        'type': '📧 Email Intel',
-        'query': email,
-        'result': result,
-        'timestamp': datetime.now().isoformat()
-    })
-    return jsonify(result)
+    try:
+        result = email_intel(email, HIBP_API_KEY)
+        current_case['findings'].append({
+            'type': '📧 Email Intel',
+            'query': email,
+            'result': result,
+            'timestamp': datetime.now().isoformat()
+        })
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/api/phone', methods=['POST'])
 def phone_lookup():
@@ -45,14 +48,17 @@ def phone_lookup():
     region = data.get('region', 'US')
     if not phone:
         return jsonify({'error': 'Phone required'}), 400
-    result = phone_intel(phone, region)
-    current_case['findings'].append({
-        'type': '📱 Phone Intel',
-        'query': phone,
-        'result': result,
-        'timestamp': datetime.now().isoformat()
-    })
-    return jsonify(result)
+    try:
+        result = phone_intel(phone, region)
+        current_case['findings'].append({
+            'type': '📱 Phone Intel',
+            'query': phone,
+            'result': result,
+            'timestamp': datetime.now().isoformat()
+        })
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/api/holehe', methods=['POST'])
 def holehe_lookup():
@@ -60,21 +66,26 @@ def holehe_lookup():
     email = data.get('email', '').strip()
     if not email:
         return jsonify({'error': 'Email required'}), 400
-    result = run_holehe_sync(email)
-    registered = sum(1 for v in result.values() if v.get('registered', False))
-    summary = {
-        'email': email,
-        'total_checked': len(result),
-        'registered_count': registered,
-        'sites': result
-    }
-    current_case['findings'].append({
-        'type': '🔍 Deep Account Scan (Holehe)',
-        'query': email,
-        'result': summary,
-        'timestamp': datetime.now().isoformat()
-    })
-    return jsonify(summary)
+    try:
+        result = run_holehe_sync(email)
+        if isinstance(result, dict) and 'error' in result:
+            return jsonify(result), 500
+        registered = sum(1 for v in result.values() if v.get('registered', False))
+        summary = {
+            'email': email,
+            'total_checked': len(result),
+            'registered_count': registered,
+            'sites': result
+        }
+        current_case['findings'].append({
+            'type': '🔍 Deep Account Scan (Holehe)',
+            'query': email,
+            'result': summary,
+            'timestamp': datetime.now().isoformat()
+        })
+        return jsonify(summary)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/api/xposed', methods=['POST'])
 def xposed_lookup():
@@ -82,14 +93,17 @@ def xposed_lookup():
     email = data.get('email', '').strip()
     if not email:
         return jsonify({'error': 'Email required'}), 400
-    result = check_xposed(email)
-    current_case['findings'].append({
-        'type': '🔐 Breach Check (Xposed)',
-        'query': email,
-        'result': result,
-        'timestamp': datetime.now().isoformat()
-    })
-    return jsonify(result)
+    try:
+        result = check_xposed(email)
+        current_case['findings'].append({
+            'type': '🔐 Breach Check (Xposed)',
+            'query': email,
+            'result': result,
+            'timestamp': datetime.now().isoformat()
+        })
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/api/username', methods=['POST'])
 def username_lookup():
@@ -97,14 +111,17 @@ def username_lookup():
     username = data.get('username', '').strip()
     if not username:
         return jsonify({'error': 'Username required'}), 400
-    result = check_username_sync(username)
-    current_case['findings'].append({
-        'type': '👤 Username Search (150+ sites)',
-        'query': username,
-        'result': result,
-        'timestamp': datetime.now().isoformat()
-    })
-    return jsonify(result)
+    try:
+        result = check_username_sync(username)
+        current_case['findings'].append({
+            'type': '👤 Username Search (150+ sites)',
+            'query': username,
+            'result': result,
+            'timestamp': datetime.now().isoformat()
+        })
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/api/domain', methods=['POST'])
 def domain_lookup():
@@ -112,14 +129,17 @@ def domain_lookup():
     domain = data.get('domain', '').strip()
     if not domain:
         return jsonify({'error': 'Domain required'}), 400
-    result = domain_recon(domain)
-    current_case['findings'].append({
-        'type': '🌐 Domain Recon',
-        'query': domain,
-        'result': result,
-        'timestamp': datetime.now().isoformat()
-    })
-    return jsonify(result)
+    try:
+        result = domain_recon(domain)
+        current_case['findings'].append({
+            'type': '🌐 Domain Recon',
+            'query': domain,
+            'result': result,
+            'timestamp': datetime.now().isoformat()
+        })
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/api/case', methods=['GET'])
 def get_case():
@@ -141,4 +161,4 @@ def export_case():
     )
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8420, debug=False)
+    app.run(host='0.0.0.0', port=8420, debug=True)
